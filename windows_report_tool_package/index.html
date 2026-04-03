@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>失效报告生成助手</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-col: #2D5FFF;
+            --primary-hover: #1a4de0;
+            --primary-active: #1240c5;
+            --bg-body: #F0F4FF;
+            --bg-card: #FFFFFF;
+            --text-main: #1a2a4a;
+            --text-muted: #6b7280;
+            --border-col: #d1d5db;
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            --border-radius: 8px;
+            --header-h: 60px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: var(--font-family);
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            padding-top: var(--header-h);
+            line-height: 1.5;
+        }
+
+        .app-header {
+            background: linear-gradient(135deg, var(--primary-col), var(--primary-hover));
+            height: var(--header-h);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            padding: 0 40px;
+            box-shadow: 0 4px 12px rgba(45, 95, 255, 0.2);
+        }
+
+        .app-header h1 {
+            font-size: 24px;
+            font-weight: 700;
+            color: #ffffff;
+            letter-spacing: 0.5px;
+        }
+
+        .container {
+            width: 100%;
+            margin: 0 auto;
+            padding: 20px 16px;
+            transition: padding 0.3s;
+        }
+
+        @media (min-width: 768px) {
+            .container {
+                padding: 24px 32px;
+            }
+        }
+
+        @media (min-width: 1280px) {
+            .container {
+                padding: 24px 80px;
+            }
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+        }
+
+        .section-title::before {
+            content: "";
+            display: inline-block;
+            width: 4px;
+            height: 20px;
+            background-color: var(--primary-col);
+            margin-right: 8px;
+            border-radius: 2px;
+        }
+
+        .card {
+            background: var(--bg-card);
+            border-radius: var(--border-radius);
+            padding: 24px;
+            box-shadow: var(--shadow-sm);
+            margin-bottom: 32px;
+        }
+
+        .row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 24px;
+            margin-bottom: 16px;
+        }
+
+        .col {
+            flex: 1;
+            min-width: 300px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: var(--text-main);
+        }
+
+        input[type="text"], textarea, select {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1px solid var(--border-col);
+            border-radius: 6px;
+            font-family: inherit;
+            font-size: 14px;
+            transition: all 0.2s;
+            background-color: #f9fafb;
+        }
+
+        input[type="text"]:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: var(--primary-col);
+            background-color: #fff;
+            box-shadow: 0 0 0 3px rgba(45, 95, 255, 0.1);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        select {
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            background-size: 16px;
+            padding-right: 40px; /* Ensure text doesn't overlap the arrow */
+            cursor: pointer;
+        }
+
+        /* Accordion */
+        .accordion {
+            border: 1px solid var(--border-col);
+            border-radius: 8px;
+            margin-bottom: 16px;
+            overflow: hidden;
+            background: #fff;
+        }
+
+        .accordion-header {
+            background-color: #f9fafb;
+            padding: 16px 20px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 600;
+            user-select: none;
+            transition: background-color 0.2s;
+        }
+
+        .accordion-header:hover {
+            background-color: #f3f4f6;
+        }
+
+        .accordion-body {
+            padding: 20px;
+            border-top: 1px solid var(--border-col);
+            display: block; /* default expanded */
+        }
+
+        /* Image Grid */
+        .image-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 16px;
+        }
+
+        .image-slot {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .slot-title {
+            font-size: 13px;
+            font-weight: 500;
+            margin-bottom: 6px;
+            color: var(--text-main);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .dropzone {
+            border: 2px dashed #d1d5db;
+            border-radius: 6px;
+            height: 130px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            position: relative;
+            background: #f9fafb;
+            transition: all 0.2s;
+            overflow: hidden;
+        }
+
+        .dropzone:hover {
+            border-color: var(--primary-hover);
+            background: #f0f4ff;
+        }
+
+        .dropzone.dragover {
+            border-color: var(--primary-col);
+            background: #e5edff;
+        }
+
+        .dropzone input[type="file"] {
+            display: none;
+        }
+
+        .dropzone img.preview {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            background: #fff;
+            position: absolute;
+            top: 0; left: 0;
+            display: none;
+        }
+
+        .dropzone-text {
+            font-size: 12px;
+            color: var(--text-muted);
+            text-align: center;
+            padding: 8px;
+            pointer-events: none;
+        }
+
+        .icon-upload {
+            width: 24px;
+            height: 24px;
+            margin-bottom: 4px;
+            fill: var(--text-muted);
+            stroke: currentColor;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .btn-clear {
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            background: rgba(0,0,0,0.5);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            font-size: 12px;
+            cursor: pointer;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+        }
+
+        .btn-clear:hover {
+            background: rgba(0,0,0,0.8);
+        }
+
+        .dropzone.has-file img.preview { display: block; }
+        .dropzone.has-file .dropzone-text, .dropzone.has-file .icon-upload { display: none; }
+        .dropzone.has-file .btn-clear { display: flex; }
+
+        /* Actions */
+        .actions {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border-radius: 6px;
+            font-size: 15px;
+            font-weight: 500;
+            cursor: pointer;
+            border: 1px solid transparent;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-col);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-hover);
+        }
+
+        .btn-primary:active {
+            background-color: var(--primary-active);
+        }
+
+        .btn-danger {
+             background-color: #ef4444;
+             color: white;
+        }
+
+        .btn-danger:hover {
+            background-color: #dc2626;
+        }
+
+        .btn-secondary {
+            background-color: white;
+            color: var(--text-main);
+            border-color: var(--border-col);
+        }
+
+        .btn-secondary:hover {
+            background-color: #f9fafb;
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        /* Status */
+        .status-box {
+            background: #1e293b;
+            color: #f8fafc;
+            padding: 16px;
+            border-radius: 8px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 14px;
+            height: 200px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            margin-bottom: 24px;
+            border: 1px solid #0f172a;
+        }
+
+        .status-box.active {
+            border: 1px solid var(--primary-col);
+            box-shadow: 0 0 0 2px rgba(45, 95, 255, 0.3);
+        }
+
+        #download-btn {
+            display: none;
+            background-color: #10b981;
+            color: white;
+            text-decoration: none;
+            width: 100%;
+        }
+        #download-btn:hover {
+            background-color: #059669;
+        }
+        
+        @keyframes spin {
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <header class="app-header">
+        <h1>失效报告生成助手</h1>
+    </header>
+
+    <div class="container">
+        <form id="report-form">
+            <!-- 信息采集区 -->
+            <div class="section-title">报告信息采集</div>
+            <div class="card">
+                <div class="row">
+                    <div class="col">
+                        <label for="项目名称">项目名称</label>
+                        <textarea id="项目名称" name="项目名称" placeholder="请输入项目名称"></textarea>
+                    </div>
+                    <div class="col">
+                        <label for="背景概述">背景概述</label>
+                        <textarea id="背景概述" name="背景概述" placeholder="请输入背景概述"></textarea>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <label for="llm_model">选择大语言模型</label>
+                        <select id="llm_model" name="llm_model">
+                            <option value="Qwen/Qwen3-32B">Qwen/Qwen3-32B</option>
+                            <option value="deepseek-ai/DeepSeek-R1-Distill-Qwen-32B">deepseek-ai/DeepSeek-R1-Distill-Qwen-32B</option>
+                            <option value="Qwen/Qwen2.5-72B-Instruct">Qwen/Qwen2.5-72B-Instruct</option>
+                        </select>
+                    </div>
+                    <div class="col">
+                        <label for="vlm_model">选择多模态模型</label>
+                        <select id="vlm_model" name="vlm_model">
+                            <option value="Qwen/Qwen3-VL-32B-Instruct">Qwen/Qwen3-VL-32B-Instruct</option>
+                            <option value="Qwen/Qwen2.5-VL-72B-Instruct">Qwen/Qwen2.5-VL-72B-Instruct</option>
+                            <option value="Pro/Qwen/Qwen2.5-VL-7B-Instruct">Pro/Qwen/Qwen2.5-VL-7B-Instruct</option>
+                        </select>
+                    </div>
+                </div>
+                <!-- 预留知识库 -->
+                <div class="row">
+                    <div class="col" style="max-width: calc(50% - 12px);">
+                        <label for="kb_name">关联知识库</label>
+                        <select id="kb_name" name="kb_name">
+                            <option value="工艺知识库">工艺知识库</option>
+                            <option value="材料知识库">材料知识库</option>
+                            <option value="检测标准知识库">检测标准知识库</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 图片上传区 -->
+            <div class="section-title">图片资料上传</div>
+            <div id="image-upload-sections"></div>
+
+            <hr style="border:0; border-top:1px dashed #a0b8d8; margin: 32px 0;">
+
+            <!-- 提交区 -->
+            <div class="section-title">提交并生成报告</div>
+            <div class="actions">
+                <button type="submit" class="btn btn-primary" id="btn-submit">
+                    <svg style="width:18px;height:18px;margin-right:8px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+                    提交并生成报告
+                </button>
+                <button type="button" class="btn btn-secondary" id="btn-clear-log">清空日志</button>
+                <button type="button" class="btn btn-danger" id="btn-clear-all" style="margin-left:auto;">清空所有内容</button>
+            </div>
+
+            <!-- 状态 -->
+            <div class="status-box" id="status-box">准备就绪...</div>
+
+            <a id="download-btn" class="btn" href="" download>
+                <svg style="width:18px;height:18px;margin-right:8px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                下载生成的报告 (docx)
+            </a>
+        </form>
+    </div>
+
+    <script>
+        // 定义分类与槽位
+        const imageConfig = [
+            {
+                title: "1. 断裂保险轴",
+                slots: [
+                    { id: "1.1", label: "1.1 保险轴断裂部位" },
+                    { id: "1.2", label: "1.2 保险轴配套部件" }
+                ]
+            },
+            {
+                title: "2. 宏观断口形貌",
+                slots: [
+                    { id: "2.1", label: "2.1 限位凸起母体 15x" },
+                    { id: "2.2", label: "2.2 限位凸起母体 20x" },
+                    { id: "2.3", label: "2.3 限位凸起掉落部分 25x" },
+                    { id: "2.4", label: "2.4 保险轴限位凸起掉落部分 25x" }
+                ]
+            },
+            {
+                title: "3. 微观断口形貌",
+                slots: [
+                    { id: "3.1", label: "3.1 宏观断口" },
+                    { id: "3.2", label: "3.2 裂纹源区" },
+                    { id: "3.3", label: "3.3 疲劳条带" },
+                    { id: "3.4", label: "3.4 扩展区 1" },
+                    { id: "3.5", label: "3.5 扩展区 2" },
+                    { id: "3.6", label: "3.6 瞬断区" }
+                ]
+            },
+            {
+                title: "4. 显微组织分析",
+                slots: [
+                    { id: "4.1", label: "4.1 显微组织 100x" },
+                    { id: "4.2", label: "4.2 显微组织 500x" }
+                ]
+            },
+            {
+                title: "5. 化学分析",
+                slots: [
+                    { id: "5.1", label: "5.1 化学分析表" }
+                ]
+            },
+            {
+                title: "6. 性能验证",
+                slots: [
+                    { id: "6.1", label: "6.1 硬度试验表" }
+                ]
+            }
+        ];
+
+        // 动态生成 UI
+        const container = document.getElementById('image-upload-sections');
+
+        imageConfig.forEach(section => {
+            const acc = document.createElement('div');
+            acc.className = 'accordion';
+
+            // Header
+            const header = document.createElement('div');
+            header.className = 'accordion-header';
+            header.innerHTML = `<span>${section.title}</span>
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="transform: rotate(180deg); transition: transform 0.2s;"><polyline points="6 9 12 15 18 9"></polyline></svg>`;
+
+            // Body
+            const body = document.createElement('div');
+            body.className = 'accordion-body';
+
+            const grid = document.createElement('div');
+            grid.className = 'image-grid';
+
+            section.slots.forEach(slot => {
+                grid.innerHTML += `
+                    <div class="image-slot">
+                        <div class="slot-title" title="${slot.label}">${slot.label}</div>
+                        <div class="dropzone" id="dz-${slot.id}">
+                            <svg class="icon-upload" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                            <div class="dropzone-text">点击或拖拽上传<br>JPG/PNG</div>
+                            <input type="file" id="input-${slot.id}" name="image_${slot.id}" accept="image/jpeg, image/png">
+                            <img class="preview" id="preview-${slot.id}" src="">
+                            <button type="button" class="btn-clear" onclick="clearImage('${slot.id}', event)">✕</button>
+                        </div>
+                    </div>
+                `;
+            });
+
+            body.appendChild(grid);
+            acc.appendChild(header);
+            acc.appendChild(body);
+            container.appendChild(acc);
+
+            // Accordion Toggle Logic
+            header.addEventListener('click', () => {
+                const isOpen = body.style.display !== 'none';
+                body.style.display = isOpen ? 'none' : 'block';
+                header.querySelector('svg').style.transform = isOpen ? 'rotate(0deg)' : 'rotate(180deg)';
+            });
+        });
+
+        // 拖拽与选择逻辑
+        document.querySelectorAll('.dropzone').forEach(dz => {
+            const input = dz.querySelector('input[type="file"]');
+            const preview = dz.querySelector('.preview');
+
+            dz.addEventListener('click', () => input.click());
+
+            dz.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                dz.classList.add('dragover');
+            });
+
+            dz.addEventListener('dragleave', () => dz.classList.remove('dragover'));
+
+            dz.addEventListener('drop', (e) => {
+                e.preventDefault();
+                dz.classList.remove('dragover');
+                if (e.dataTransfer.files.length) {
+                    input.files = e.dataTransfer.files;
+                    updatePreview(input.files[0], dz, preview);
+                }
+            });
+
+            input.addEventListener('change', () => {
+                if (input.files.length) {
+                    updatePreview(input.files[0], dz, preview);
+                }
+            });
+        });
+
+        function updatePreview(file, dropzone, imgElement) {
+            if (file) {
+                const url = URL.createObjectURL(file);
+                imgElement.src = url;
+                dropzone.classList.add('has-file');
+            }
+        }
+
+        window.clearImage = function(id, e) {
+            e.stopPropagation();
+            const dz = document.getElementById(`dz-${id}`);
+            const input = document.getElementById(`input-${id}`);
+            const preview = document.getElementById(`preview-${id}`);
+
+            input.value = '';
+            preview.src = '';
+            dz.classList.remove('has-file');
+        };
+
+        // 清理所有内容
+        document.getElementById('btn-clear-all').addEventListener('click', () => {
+            if(confirm('确定清空所有表单项和上传的图片吗？')) {
+                document.getElementById('report-form').reset();
+                document.querySelectorAll('.dropzone').forEach(dz => {
+                    const input = dz.querySelector('input[type="file"]');
+                    const preview = dz.querySelector('.preview');
+                    input.value = '';
+                    preview.src = '';
+                    dz.classList.remove('has-file');
+                });
+                document.getElementById('status-box').innerHTML = '已清空内容。准备就绪...';
+                document.getElementById('status-box').classList.remove('active');
+                document.getElementById('download-btn').style.display = 'none';
+            }
+        });
+
+        // 表单提交与 SSE
+        const form = document.getElementById('report-form');
+        const submitBtn = document.getElementById('btn-submit');
+        const statusBox = document.getElementById('status-box');
+        const downloadBtn = document.getElementById('download-btn');
+        const clearLogBtn = document.getElementById('btn-clear-log');
+
+        clearLogBtn.addEventListener('click', () => {
+            statusBox.innerHTML = '';
+            statusBox.classList.remove('active');
+        });
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '正在生成... <span style="display:inline-block; animation: spin 1s linear infinite;">⏳</span>';
+            statusBox.innerHTML = '🚀 开始提交流程...\n';
+            statusBox.classList.add('active');
+            downloadBtn.style.display = 'none';
+
+            const formData = new FormData(form);
+
+            try {
+                const response = await fetch('/api/generate', {
+                    method: 'POST',
+                    body: formData,
+                });
+
+                if (!response.ok) {
+                    throw new Error(`请求错误，状态码: ${response.status}`);
+                }
+
+                const reader = response.body.getReader();
+                const decoder = new TextDecoder('utf-8');
+                let buffer = '';
+
+                while (true) {
+                    const { done, value } = await reader.read();
+                    if (done) break;
+
+                    buffer += decoder.decode(value, { stream: true });
+                    const parts = buffer.split('\n\n');
+                    buffer = parts.pop();
+
+                    for (const part of parts) {
+                        if (part.startsWith('data: ')) {
+                            try {
+                                const data = JSON.parse(part.substring(6));
+                                if (data.msg) {
+                                    statusBox.innerHTML += data.msg + '\n';
+                                    statusBox.scrollTop = statusBox.scrollHeight;
+                                }
+                                if (data.file) {
+                                    // 提取文件名
+                                    downloadBtn.href = `/api/download?path=${encodeURIComponent(data.file)}`;
+                                    downloadBtn.style.display = 'inline-flex';
+                                }
+                                if (data.done) {
+                                    statusBox.classList.remove('active');
+                                    submitBtn.disabled = false;
+                                    submitBtn.innerHTML = '<svg style="width:18px;height:18px;margin-right:8px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg> 再次生成';
+                                }
+                            } catch (err) {
+                                console.error('SSE 解析失败:', err, part);
+                            }
+                        }
+                    }
+                }
+            } catch (err) {
+                statusBox.innerHTML += `\n❌ 请求失败：${err.message}\n`;
+                statusBox.classList.remove('active');
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<svg style="width:18px;height:18px;margin-right:8px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg> 重新提交';
+            }
+        });
+    </script>
+</body>
+</html>
