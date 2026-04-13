@@ -52,7 +52,7 @@ KB_PASSWORD = os.environ.get("KB_PASSWORD", "")
 # =========================
 # 输出目录
 # =========================
-JOB_ROOT = Path(os.environ.get("JOB_ROOT", str(Path.home() / "Desktop" / "gradio_report_jobs")))
+JOB_ROOT = Path.home() / "Desktop" / "gradio_report_jobs"
 
 # =========================
 # 图片规则
@@ -1310,7 +1310,9 @@ app = Flask(__name__, static_folder='.', static_url_path='')
 
 @app.route('/')
 def index():
-    return send_from_directory('.', 'index.html')
+    resp = send_from_directory('.', 'index.html')
+    resp.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+    return resp
 
 
 @app.route('/api/generate', methods=['POST'])

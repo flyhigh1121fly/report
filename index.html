@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -100,7 +101,7 @@
             background: var(--bg-card);
             border-radius: var(--border-radius);
             padding: 24px;
-            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-col);
             margin-bottom: 32px;
         }
 
@@ -125,7 +126,9 @@
             color: var(--text-main);
         }
 
-        input[type="text"], textarea, select {
+        input[type="text"],
+        textarea,
+        select {
             width: 100%;
             padding: 10px 14px;
             border: 1px solid var(--border-col);
@@ -136,7 +139,9 @@
             background-color: #f9fafb;
         }
 
-        input[type="text"]:focus, textarea:focus, select:focus {
+        input[type="text"]:focus,
+        textarea:focus,
+        select:focus {
             outline: none;
             border-color: var(--primary-col);
             background-color: #fff;
@@ -156,7 +161,8 @@
             background-repeat: no-repeat;
             background-position: right 12px center;
             background-size: 16px;
-            padding-right: 40px; /* Ensure text doesn't overlap the arrow */
+            padding-right: 40px;
+            /* Ensure text doesn't overlap the arrow */
             cursor: pointer;
         }
 
@@ -176,7 +182,9 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            font-weight: 600;
+            font-weight: 700;
+            font-size: 15px;
+            color: var(--text-main);
             user-select: none;
             transition: background-color 0.2s;
         }
@@ -188,7 +196,8 @@
         .accordion-body {
             padding: 20px;
             border-top: 1px solid var(--border-col);
-            display: block; /* default expanded */
+            display: block;
+            /* default expanded */
         }
 
         /* Group Title Row */
@@ -196,15 +205,15 @@
             display: flex;
             align-items: center;
             padding: 12px 16px;
+            margin-bottom: 16px;
             gap: 8px;
             background-color: #f8fafc;
-            border-bottom: 1px solid var(--border-col);
         }
 
         .group-title-label {
             font-size: 14px;
-            font-weight: 500;
-            color: var(--text-muted);
+            font-weight: 700;
+            color: var(--text-main);
             white-space: nowrap;
         }
 
@@ -220,7 +229,6 @@
 
         .group-title-input:focus {
             border-color: var(--primary-col);
-            box-shadow: 0 0 0 2px rgba(45, 95, 255, 0.1);
         }
 
         /* Image Grid */
@@ -280,7 +288,8 @@
             object-fit: contain;
             background: #fff;
             position: absolute;
-            top: 0; left: 0;
+            top: 0;
+            left: 0;
             display: none;
         }
 
@@ -307,7 +316,7 @@
             position: absolute;
             top: 4px;
             right: 4px;
-            background: rgba(0,0,0,0.5);
+            background: rgba(0, 0, 0, 0.5);
             color: white;
             border: none;
             border-radius: 50%;
@@ -322,12 +331,21 @@
         }
 
         .btn-clear:hover {
-            background: rgba(0,0,0,0.8);
+            background: rgba(0, 0, 0, 0.8);
         }
 
-        .dropzone.has-file img.preview { display: block; }
-        .dropzone.has-file .dropzone-text, .dropzone.has-file .icon-upload { display: none; }
-        .dropzone.has-file .btn-clear { display: flex; }
+        .dropzone.has-file img.preview {
+            display: block;
+        }
+
+        .dropzone.has-file .dropzone-text,
+        .dropzone.has-file .icon-upload {
+            display: none;
+        }
+
+        .dropzone.has-file .btn-clear {
+            display: flex;
+        }
 
         /* Actions */
         .actions {
@@ -363,8 +381,8 @@
         }
 
         .btn-danger {
-             background-color: #ef4444;
-             color: white;
+            background-color: #ef4444;
+            color: white;
         }
 
         .btn-danger:hover {
@@ -408,7 +426,6 @@
             outline: none;
             background: white;
             border-color: var(--primary-col);
-            box-shadow: 0 0 0 2px rgba(45, 95, 255, 0.1);
             color: var(--text-main);
         }
 
@@ -437,8 +454,9 @@
         }
 
         .btn-icon-add {
-             color: var(--primary-col);
+            color: var(--primary-col);
         }
+
         .btn-icon-add:hover {
             background: #eff6ff;
             color: var(--primary-hover);
@@ -521,15 +539,19 @@
             text-decoration: none;
             width: 100%;
         }
+
         #download-btn:hover {
             background-color: #059669;
         }
 
         @keyframes spin {
-            100% { transform: rotate(360deg); }
+            100% {
+                transform: rotate(360deg);
+            }
         }
     </style>
 </head>
+
 <body>
     <header class="app-header">
         <h1>失效报告生成助手</h1>
@@ -565,12 +587,21 @@
                         </select>
                     </div>
                 </div>
-                <!-- 知识库 -->
+                <!-- 知识库 & 术语库 -->
                 <div class="row">
                     <div class="col" style="max-width: calc(50% - 12px);">
                         <label for="kb_id">关联知识库（可选）</label>
                         <select id="kb_id" name="kb_id">
                             <option value="">不使用知识库</option>
+                        </select>
+                    </div>
+                    <div class="col" style="max-width: calc(50% - 12px);">
+                        <label for="term_lib">关联术语库（可选）</label>
+                        <select id="term_lib" name="term_lib">
+                            <option value="">不使用术语库</option>
+                            <option value="工艺术语库">工艺术语库</option>
+                            <option value="医疗术语库">医疗术语库</option>
+                            <option value="默认术语库">默认术语库</option>
                         </select>
                     </div>
                 </div>
@@ -579,10 +610,14 @@
             <!-- 图片上传区 -->
             <div class="section-title">图片资料上传</div>
             <div id="image-upload-sections"></div>
-            
+
             <div class="add-section-container">
                 <button type="button" class="btn-add-section" id="btn-add-section">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="12" y1="5" x2="12" y2="19"></line>
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                    </svg>
                     添加新展示卡片
                 </button>
             </div>
@@ -593,21 +628,48 @@
             <div class="section-title">提交并生成报告</div>
             <div class="actions">
                 <button type="submit" class="btn btn-primary" id="btn-submit">
-                    <svg style="width:18px;height:18px;margin-right:8px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+                    <svg style="width:18px;height:18px;margin-right:8px;" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="22" y1="2" x2="11" y2="13"></line>
+                        <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                    </svg>
                     提交并生成报告
                 </button>
                 <button type="button" class="btn btn-secondary" id="btn-clear-log">清空日志</button>
-                <button type="button" class="btn btn-danger" id="btn-clear-all" style="margin-left:auto;">清空所有内容</button>
+                <button type="button" class="btn btn-danger" id="btn-clear-all"
+                    style="margin-left:auto;">清空所有内容</button>
             </div>
 
             <!-- 状态 -->
             <div class="status-box" id="status-box">准备就绪...</div>
 
             <a id="download-btn" class="btn" href="" download>
-                <svg style="width:18px;height:18px;margin-right:8px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                <svg style="width:18px;height:18px;margin-right:8px;" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                    <polyline points="7 10 12 15 17 10"></polyline>
+                    <line x1="12" y1="15" x2="12" y2="3"></line>
+                </svg>
                 下载生成的报告 (docx)
             </a>
         </form>
+
+        <!-- 确认弹窗 -->
+        <div id="confirm-modal"
+            style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.35); z-index:9999; justify-content:center; align-items:center;">
+            <div
+                style="background:#fff; border-radius:10px; width:360px; box-shadow:0 8px 30px rgba(0,0,0,0.18); overflow:hidden;">
+                <div id="confirm-title"
+                    style="padding:18px 24px 0; font-size:16px; font-weight:700; color:var(--text-main);"></div>
+                <div id="confirm-msg" style="padding:12px 24px 20px; font-size:14px; color:var(--text-muted);"></div>
+                <div style="display:flex; border-top:1px solid var(--border-col);">
+                    <button id="confirm-cancel"
+                        style="flex:1; padding:12px; font-size:14px; border:none; background:#fff; color:var(--text-muted); cursor:pointer; transition:background 0.15s;">取消</button>
+                    <button id="confirm-ok"
+                        style="flex:1; padding:12px; font-size:14px; border:none; border-left:1px solid var(--border-col); background:#fff; color:#2D5FFF; font-weight:600; cursor:pointer; transition:background 0.15s;">确定</button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -761,24 +823,25 @@
             });
         }
 
-        window.addSection = () => {
-            const newId = "sec_" + Date.now();
-
-            // 找到当前最大的章节编号
-            let maxNumber = 0;
-            imageConfig.forEach(section => {
-                const match = section.title.match(/^(\d+)\./);
-                if (match) {
-                    const num = parseInt(match[1]);
-                    if (num > maxNumber) maxNumber = num;
+        /**
+         * 重新编排章节序号：第 1 个为 "1."，其余为 "2.1" "2.2" ...
+         */
+        function renumberSections() {
+            imageConfig.forEach((section, i) => {
+                // 提取标题中的纯文字部分（去掉开头序号）
+                const text = section.title.replace(/^[\d.]+\s*/, '');
+                if (i === 0) {
+                    section.title = `1. ${text}`;
+                } else {
+                    section.title = `2.${i} ${text}`;
                 }
             });
+        }
 
-            // 新章节编号为最大编号 + 1
-            const newNumber = maxNumber + 1;
-            const newTitle = `${newNumber}. 新章节`;
-
-            imageConfig.push({ id: newId, title: newTitle, groupTitle: "", slots: [] });
+        window.addSection = () => {
+            const newId = "sec_" + Date.now();
+            imageConfig.push({ id: newId, title: "", groupTitle: "", slots: [] });
+            renumberSections();
             renderUI();
         };
 
@@ -786,15 +849,15 @@
         container.addEventListener('click', (e) => {
             const btn = e.target.closest('button');
             const header = e.target.closest('.accordion-header');
-            
+
             // 按钮优先处理
             if (btn) {
                 e.stopPropagation();
                 const action = btn.dataset.action;
                 const sIndex = parseInt(btn.dataset.sindex);
                 const slotIndex = parseInt(btn.dataset.slotindex);
-                
-                console.log(`UI Action: ${action}`, {sIndex, slotIndex});
+
+                console.log(`UI Action: ${action}`, { sIndex, slotIndex });
 
                 if (action === 'add-slot') {
                     uiAddSlot(sIndex);
@@ -817,48 +880,73 @@
         });
 
         // 业务函数
+        /**
+         * 重新编排某个章节内槽位的子图序号：从 (a) 开始连续递增
+         */
+        function renumberSlots(sIndex) {
+            const section = imageConfig[sIndex];
+            section.slots.forEach((slot, i) => {
+                const letter = String.fromCharCode(97 + i);
+                const text = slot.label.replace(/^[（(][a-z][）)]\s*/, '');
+                slot.label = `(${letter}) ${text}`;
+            });
+        }
+
         function uiAddSlot(sIndex) {
             const section = imageConfig[sIndex];
-
-            // 从章节标题中提取编号
-            const sectionMatch = section.title.match(/^(\d+)\./);
-            const sectionNumber = sectionMatch ? sectionMatch[1] : (sIndex + 1).toString();
-
-            // 找到该章节下当前最大的槽位编号
-            let maxSlotNumber = 0;
-            section.slots.forEach(slot => {
-                const match = slot.label.match(new RegExp(`^${sectionNumber}\\.(\\d+)`));
-                if (match) {
-                    const num = parseInt(match[1]);
-                    if (num > maxSlotNumber) maxSlotNumber = num;
-                }
-            });
-
-            // 新槽位编号为最大编号 + 1
-            const newSlotNumber = maxSlotNumber + 1;
-            const newLabel = `${sectionNumber}.${newSlotNumber} 新图片槽位`;
+            const letter = String.fromCharCode(97 + section.slots.length);
+            const newLabel = `(${letter}) 新图片槽位`;
 
             const newId = "slot_" + Date.now();
             section.slots.push({ id: newId, label: newLabel });
             renderUI();
         }
 
+        /**
+         * 自定义确认弹窗（居中显示）
+         */
+        function showConfirm(title, message) {
+            return new Promise(resolve => {
+                const modal = document.getElementById('confirm-modal');
+                document.getElementById('confirm-title').textContent = title;
+                document.getElementById('confirm-msg').textContent = message;
+                modal.style.display = 'flex';
+
+                const okBtn = document.getElementById('confirm-ok');
+                const cancelBtn = document.getElementById('confirm-cancel');
+
+                function cleanup() {
+                    modal.style.display = 'none';
+                    okBtn.removeEventListener('click', onOk);
+                    cancelBtn.removeEventListener('click', onCancel);
+                }
+                function onOk() { cleanup(); resolve(true); }
+                function onCancel() { cleanup(); resolve(false); }
+
+                okBtn.addEventListener('click', onOk);
+                cancelBtn.addEventListener('click', onCancel);
+            });
+        }
+
         function uiDeleteSection(sIndex) {
-            if (confirm('确定要删除此章节吗？该章节下的所有内容也将被移除。')) {
-                // 清除该章节下所有槽位的文件缓存
+            showConfirm('删除章节', '确定要删除此章节吗？该章节下的所有内容也将被移除。').then(ok => {
+                if (!ok) return;
                 imageConfig[sIndex].slots.forEach(slot => { delete fileStore[slot.id]; });
                 imageConfig.splice(sIndex, 1);
+                renumberSections();
                 renderUI();
-            }
+            });
         }
 
         function uiDeleteSlot(sIndex, slotIndex) {
-            if (confirm('确定要删除此图片槽位吗？')) {
+            showConfirm('删除图片', '确定要删除此图片槽位吗？').then(ok => {
+                if (!ok) return;
                 const slotId = imageConfig[sIndex].slots[slotIndex].id;
-                delete fileStore[slotId];  // 清除文件缓存
+                delete fileStore[slotId];
                 imageConfig[sIndex].slots.splice(slotIndex, 1);
+                renumberSlots(sIndex);
                 renderUI();
-            }
+            });
         }
 
         window.updateSectionTitle = (sIndex, val) => { imageConfig[sIndex].title = val; };
@@ -905,7 +993,7 @@
             }
         }
 
-        window.clearImage = function(id, e) {
+        window.clearImage = function (id, e) {
             e.stopPropagation();
             const dz = document.getElementById(`dz-${id}`);
             const input = document.getElementById(`input-${id}`);
@@ -980,9 +1068,9 @@
 
         // 原本的清理逻辑优化
         document.getElementById('btn-clear-all').addEventListener('click', () => {
-            if(confirm('确定清空所有表单项并恢复默认结构吗？')) {
-                location.reload(); // 简单粗暴恢复初始状态
-            }
+            showConfirm('清空内容', '确定清空所有表单项并恢复默认结构吗？').then(ok => {
+                if (ok) location.reload();
+            });
         });
 
         // 表单提交与 SSE
@@ -1086,4 +1174,5 @@
         });
     </script>
 </body>
+
 </html>
