@@ -1,0 +1,12 @@
+__pycache__/
+venv/
+.venv/
+.idea/
+.claude/
+.git/
+.env
+*.pyc
+*.doc
+*.md
+run.bat
+README_Windows.txt
