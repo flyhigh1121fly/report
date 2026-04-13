@@ -764,6 +764,7 @@ def _generate_report_stream(form, files):
     """Generator: yields SSE data strings for Flask streaming response."""
 
     def sse(msg: str, file_path: str | None = None, done: bool = False) -> str:
+        print(msg)
         payload = {"msg": msg, "file": file_path, "done": done}
         return f"data: {json.dumps(payload, ensure_ascii=False)}\n\n"
 
@@ -1037,10 +1038,21 @@ def _generate_report_stream(form, files):
             if not insert_anchor:
                 insert_anchor = doc.paragraphs[-1] if doc.paragraphs else None
 
-            # 3. 按顺序构建所有章节
+            current_anchor = insert_anchor
+
+            # 3. 插入项目名称标题（居中、宋体三号加粗）
+            from section_builders import set_run_font as _set_run_font
+            proj_title_p = doc.add_paragraph()
+            current_anchor._p.addnext(proj_title_p._p)
+            proj_title_p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+            proj_title_run = proj_title_p.add_run(project_name)
+            proj_title_run.bold = True
+            _set_run_font(proj_title_run, "宋体", 16.0)  # 三号 = 16pt
+            current_anchor = proj_title_p
+
+            # 4. 按顺序构建所有章节
             #    第一个手风琴 → "1 概述"
             #    其余手风琴 → "2 分析过程及结果"下的子章节 2.1、2.2...
-            current_anchor = insert_anchor
             figure_counter = 0  # 全局连续图编号
             table_counter = 0   # 表格编号（化学分析、性能验证等）
             sub_section_idx = 0  # 分析过程子章节计数（2.1, 2.2...）
