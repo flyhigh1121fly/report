@@ -1045,7 +1045,7 @@ def _generate_report_stream(form, files):
             proj_title_p = doc.add_paragraph()
             current_anchor._p.addnext(proj_title_p._p)
             proj_title_p.alignment = WD_ALIGN_PARAGRAPH.CENTER
-            proj_title_run = proj_title_p.add_run(project_name)
+            proj_title_run = proj_title_p.add_run(project_name_val)
             proj_title_run.bold = True
             _set_run_font(proj_title_run, "宋体", 16.0)  # 三号 = 16pt
             current_anchor = proj_title_p
