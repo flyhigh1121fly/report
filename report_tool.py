@@ -764,7 +764,7 @@ def _generate_report_stream(form, files):
     """Generator: yields SSE data strings for Flask streaming response."""
 
     def sse(msg: str, file_path: str | None = None, done: bool = False) -> str:
-        print(msg)
+        print(msg, flush=True)
         payload = {"msg": msg, "file": file_path, "done": done}
         return f"data: {json.dumps(payload, ensure_ascii=False)}\n\n"
 
