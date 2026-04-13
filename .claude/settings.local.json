@@ -1,0 +1,25 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//c/Users/wangs/Downloads/report/**)",
+      "Bash(python report_tool.py)",
+      "Bash(pip install:*)",
+      "Bash(python:*)",
+      "Bash(venv/Scripts/python.exe:*)",
+      "Bash(uv --version)",
+      "Bash(venv/Scripts/pip.exe install:*)",
+      "Read(//c/Users/wangs/AppData/Local/Temp/claude/C--Users-wangs-Downloads-report/3c96a829-9be9-4e20-8e73-0062e3074e3c/tasks/**)",
+      "Bash(xargs -r kill)",
+      "Bash(taskkill //PID 29060 //F)",
+      "Bash(taskkill //PID 22692 //F)",
+      "Bash(tasklist)",
+      "Bash(C:/Users/wangs/Downloads/report/venv/Scripts/python.exe:*)",
+      "Bash(git init:*)",
+      "Bash(git add:*)",
+      "Bash(git reset:*)",
+      "Bash(git rm:*)",
+      "Bash(git commit:*)",
+      "Bash(git config:*)"
+    ]
+  }
+}
