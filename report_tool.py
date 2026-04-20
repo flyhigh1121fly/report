@@ -48,6 +48,8 @@ KB_AUTH_URL = os.environ.get("KB_AUTH_URL", "")
 KB_API_URL = os.environ.get("KB_API_URL", "")
 KB_USERNAME = os.environ.get("KB_USERNAME", "")
 KB_PASSWORD = os.environ.get("KB_PASSWORD", "")
+KB_TOP_K = int(os.environ.get("KB_TOP_K", "5"))
+KB_SCORE_THRESHOLD = float(os.environ.get("KB_SCORE_THRESHOLD", "0.3"))
 
 # =========================
 # 输出目录
@@ -362,9 +364,14 @@ def kb_retrieve(token: str, knowledge_id: str, query: str, top_k: int = 5, score
         "retrieval_setting": {"top_k": top_k, "score_threshold": score_threshold},
     }
     try:
+        print(f"[KB] POST {url}", flush=True)
+        print(f"[KB] payload: {json.dumps(payload, ensure_ascii=False)}", flush=True)
         r = requests.post(url, headers=headers, json=payload, timeout=30)
+        print(f"[KB] status: {r.status_code}", flush=True)
+        print(f"[KB] response: {r.text[:1000]}", flush=True)
         r.raise_for_status()
         records = (r.json().get("records") or [])
+        print(f"[KB] records count: {len(records)}", flush=True)
         parts = []
         for rec in records:
             content = rec.get("content", "").strip()
@@ -1244,7 +1251,7 @@ def _generate_report_stream(form, files):
             kb_token =kb_login()
             if kb_token:
                 query_text =background_overview if background_overview and background_overview != "none" else project_name_val
-                kb_knowledge=kb_retrieve(kb_token, kb_id, query_text, top_k=5, score_threshold=0.3)
+                kb_knowledge=kb_retrieve(kb_token, kb_id, query_text, top_k=KB_TOP_K, score_threshold=KB_SCORE_THRESHOLD)
                 if kb_knowledge:
                     yield sse(f"⏳ 知识库检索完成，获取到 {len(kb_knowledge)} 字相关知识内容")
                 else:
